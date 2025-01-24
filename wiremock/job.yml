@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: demo-job
+  namespace: wiremock
+spec:
+  completions: 1
+  parallelism: 1 # in case of 2 , 2 pods will distribute the work
+  template:
+    spec:
+      containers:
+        - name: busybox
+          image: busybox:latest
+          command: ["sh", "-c", "echo hello world && sleep 10"]
+      restartPolicy: Never

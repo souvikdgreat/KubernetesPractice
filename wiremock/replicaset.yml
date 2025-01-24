@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: wiremock-replica-set
+  namespace: wiremock
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wiremock-label
+  template:
+    metadata:
+      labels:
+        app: wiremock-label
+    spec:
+      containers:
+        - name: my-wiremock-app
+          image: wiremock/wiremock:latest
+          ports:
+            - containerPort: 8080
+# no need to give name and namespace to the pod

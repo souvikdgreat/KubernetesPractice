@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiremock-deployment
+  namespace: wiremock
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wiremock-label
+  template:
+    metadata:
+      labels:
+        app: wiremock-label
+    spec:
+      containers:
+        - name: my-wiremock-app
+          image: wiremock/wiremock:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: file-volume
+              mountPath: /home/wiremock/__files
+            - name: mapping-volume
+              mountPath: /home/wiremock/mappings
+      volumes:
+        - name: file-volume
+          hostPath:
+            path: /Users/souvikchakraborty/Documents/projects/devtools/KubernetesPractice/wiremock/files
+            type: Directory
+        - name: mapping-volume
+          hostPath:
+            path: /Users/souvikchakraborty/Documents/projects/devtools/KubernetesPractice/wiremock/mappings
+            type: Directory

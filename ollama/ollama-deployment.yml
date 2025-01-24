@@ -1,0 +1,84 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ollama
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ollama-pv
+  labels:
+    env: ollama-pv-label
+spec:
+  storageClassName: local-storage
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/Users/souvikchakraborty/kubeOllamaData"
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-pv-claim
+  namespace: ollama
+spec:
+  storageClassName: local-storage
+  selector:
+    matchLabels:
+      env: ollama-pv-label
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama-deployment
+  namespace: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      containers:
+        - name: ollama
+          image: ollama/ollama
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 11434
+          command: [ "/bin/sh", "-c" ]
+          volumeMounts:
+            - mountPath: /data
+              name: ollama-storage
+      restartPolicy: Always
+      volumes:
+        - name: ollama-storage
+          persistentVolumeClaim:
+            claimName: ollama-pv-claim
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-service
+  namespace: ollama
+spec:
+  selector:
+    app: ollama
+  ports:
+    - protocol: TCP
+      port: 11434
+      targetPort: 11434
+  type: NodePort

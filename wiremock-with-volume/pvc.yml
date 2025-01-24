@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wiremock-pv-claim
+  namespace: wiremock
+spec:
+  storageClassName: local-storage
+  selector:
+    matchLabels:
+      env: wiremock-pv-label
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+
+#  namespace: wiremock mandatory for pvc

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: wiremock-daemon-set
+  namespace: wiremock
+spec:
+  selector:
+    matchLabels:
+      app: wiremock-label
+  template:
+    metadata:
+      labels:
+        app: wiremock-label
+    spec:
+      containers:
+        - name: my-wiremock-app
+          image: wiremock/wiremock:latest
+          ports:
+            - containerPort: 8080
+# no need to give replicas

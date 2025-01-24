@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wiremock-pod
+  namespace: wiremock
+spec:
+  containers:
+    - name: my-wiremock-app
+      image: wiremock/wiremock:latest
+      ports:
+        - containerPort: 8080
+      volumeMounts:
+        - name: file-volume
+          mountPath: /home/wiremock/__files
+  volumes:
+    - name: file-volume
+      hostPath:
+        path: /Users/souvikchakraborty/Documents/projects/devtools/KubernetesPractice/wiremock/files #absolute path needs to be mounted
+        type: Directory

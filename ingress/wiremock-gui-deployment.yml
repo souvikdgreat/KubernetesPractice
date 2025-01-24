@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiremock-gui-deployment
+  namespace: wiremock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wiremock-gui
+      #the key value pair of label can be anything we just need to make sure it matches the label
+  template:
+    metadata:
+      labels:
+        app: wiremock-gui
+    spec:
+      containers:
+        - name: wiremock-gui-app
+          image: holomekc/wiremock-gui
+          ports:
+            - containerPort: 8080
+# no need to give name and namespace to the pod
